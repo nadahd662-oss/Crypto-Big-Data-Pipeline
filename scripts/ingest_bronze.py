@@ -27,7 +27,7 @@ def run_bronze_ingestion():
         raw_json = response.json()
     except Exception as e:
         print(f"❌ API Extraction failed: {e}")
-        return
+        return None
 
     # 2. Wrap payload with an ingestion timestamp for historical lineage tracking
     now = datetime.utcnow()
@@ -36,13 +36,13 @@ def run_bronze_ingestion():
         "data": raw_json
     }
 
-    # 3. Connect to local MinIO using settings variables
+    # 🛠️ 3. Configuration du client MinIO (BIEN INDENTÉ À L'INTÉRIEUR DE LA FONCTION)
+    # Puisque ton .env contient déjà "http://", on passe directement settings.MINIO_ENDPOINT
     s3_client = boto3.client(
-        "s3",
-        endpoint_url=settings.MINIO_ENDPOINT,
-        aws_access_key_id=settings.MINIO_USER,
-        aws_secret_access_key=settings.MINIO_PASSWORD,
-        config=Config(signature_version="s3v4"),
+        's3',
+        endpoint_url=settings.MINIO_ENDPOINT,  
+        aws_access_key_id=settings.MINIO_ACCESS_KEY,       
+        aws_secret_access_key=settings.MINIO_SECRET_KEY,   
         region_name=settings.MINIO_REGION
     )
 
