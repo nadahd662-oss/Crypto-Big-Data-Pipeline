@@ -8,7 +8,7 @@ import snowflake.connector
 
 # Set up configurations
 sys.path.append(str(Path(__file__).resolve().parent.parent))
-from dags.config.settings import settings
+from scripts.settings import settings
 
 def load_gold_to_snowflake():
     print("❄️ Connecting to local MinIO storage...")

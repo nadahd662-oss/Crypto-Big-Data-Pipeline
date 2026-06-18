@@ -7,7 +7,7 @@ from botocore.client import Config
 
 # Assurer que la racine du projet est dans le chemin Python pour l'import de la config
 sys.path.append(str(Path(__file__).resolve().parent.parent))
-from dags.config.settings import settings
+from scripts.settings import settings
 
 def show_gold_market_report():
     print("Fetching the latest financial data from the Gold Layer in MinIO...\n")

@@ -9,7 +9,7 @@ from pathlib import Path
 # 1. On configure le chemin absolu pour Docker d'abord
 sys.path.append("/opt/airflow")
 # 2. On importe tes settings maintenant que Python sait où chercher
-from dags.config.settings import settings
+from scripts.settings import settings
 
 
 def run_bronze_ingestion():

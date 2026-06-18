@@ -7,7 +7,7 @@ from botocore.client import Config
 
 # Ensure the project root is in the Python path to import settings
 sys.path.append(str(Path(__file__).resolve().parent.parent))
-from dags.config.settings import settings
+from scripts.settings import settings
 
 def process_silver_to_gold(silver_object_key):
     print(f"🌟 Starting Gold layer Star-Schema modeling for: {silver_object_key}...")
