@@ -8,7 +8,7 @@ from pathlib import Path
 
 # Include project root path
 sys.path.append(str(Path(__file__).resolve().parent.parent))
-from config.settings import settings
+from dags.config.settings import settings
 
 def process_bronze_to_silver(bronze_object_key):
     print(f"🧹 Starting Silver layer transformation for: {bronze_object_key}...")

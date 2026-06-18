@@ -7,10 +7,9 @@ import os
 # 1. Définition des alertes en cas d'échec
 def alert_on_failure(context):
     task_id = context.get('task_instance').task_id
-    execution_date = context.get('execution_date')
+    logical_date = context.get('logical_date')  # Standardisé pour Airflow 3.0
     error = context.get('exception')
-    print(f"🚨 ALERT: Task '{task_id}' failed on {execution_date}. Error: {error}")
-    # C'est ici qu'on pourrait brancher un envoi de mail ou une notification Slack/Teams
+    print(f"🚨 ALERT: Task '{task_id}' failed on {logical_date}. Error: {error}")
 
 # 2. Configuration par défaut du DAG (Retries et résilience)
 default_args = {
@@ -29,13 +28,12 @@ with DAG(
     'cryptopipelinedag',
     default_args=default_args,
     description='Automated End-to-End Medallion Crypto Pipeline with Snowflake Cloud Loading',
-    schedule_interval='@daily',         # S'exécute automatiquement TOUS LES JOURS
+    schedule='@daily',                  # ✨ Corrigé pour Airflow 3.0 (remplace schedule_interval)
     catchup=False,                      # N'exécute pas les jours passés au premier démarrage
     tags=['crypto', 'medallion', 'snowflake'],
 ) as dag:
 
     # Définition du chemin de base vers ton projet pour les scripts
-    # (Ajuste le chemin absolu si nécessaire selon ton installation Airflow)
     PROJECT_DIR = "/opt/airflow" if os.environ.get('AIRFLOW_HOME') else os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
     # Task 1: Ingestion Bronze (CoinGecko API -> MinIO JSON)

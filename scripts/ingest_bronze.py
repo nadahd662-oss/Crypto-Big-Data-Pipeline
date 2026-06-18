@@ -4,11 +4,13 @@ from datetime import datetime
 import boto3
 from botocore.client import Config
 import sys
+import os 
 from pathlib import Path
+# 1. On configure le chemin absolu pour Docker d'abord
+sys.path.append("/opt/airflow")
+# 2. On importe tes settings maintenant que Python sait où chercher
+from dags.config.settings import settings
 
-# Ensure the project root is in the Python path so we can import config
-sys.path.append(str(Path(__file__).resolve().parent.parent))
-from config.settings import settings
 
 def run_bronze_ingestion():
     print("🚀 Fetching raw market data from CoinGecko API...")
