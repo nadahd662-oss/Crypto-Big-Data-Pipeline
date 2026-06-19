@@ -12,13 +12,14 @@ def alert_on_failure(context):
     error = context.get('exception')
     print(f"🚨 ALERT: Task '{task_id}' failed on {logical_date}. Error: {error}")
 
-# Fonction Python pour insérer directement les métriques sans lister les colonnes
+# Fonction Python robuste exécutée hier avec succès
 def load_data_to_snowflake():
     from airflow.providers.snowflake.hooks.snowflake import SnowflakeHook
     
+    # Récupération de la connexion configurée dans Airflow Admin
     hook = SnowflakeHook(snowflake_conn_id='snowflake_default')
     
-    # Requête simplifiée au maximum : on insère directement les valeurs dans l'ordre de la table
+    # Requête d'insertion directe
     sql_query = """
     INSERT INTO FACT_CRYPTO_METRICS 
     VALUES (
@@ -46,7 +47,7 @@ default_args = {
     'on_failure_callback': alert_on_failure
 }
 
-# 3. Initialisation du DAG
+# 3. Initialisation du DAG Médaillon
 with DAG(
     'cryptopipelinedag',
     default_args=default_args,
@@ -56,7 +57,7 @@ with DAG(
     tags=['crypto', 'medallion', 'snowflake'],
 ) as dag:
 
-    # Définition du chemin de base vers ton projet pour les scripts
+    # Définition automatique du chemin du projet (Local vs Docker)
     PROJECT_DIR = "/opt/airflow" if os.environ.get('AIRFLOW_HOME') else os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
     # Task 1: Ingestion Bronze (CoinGecko API -> MinIO JSON)
@@ -77,11 +78,11 @@ with DAG(
         bash_command=f'python {PROJECT_DIR}/scripts/model_gold.py',
     )
 
-    # Task 4: Chargement Snowflake (Via Crochet Python direct)
+    # Task 4: Chargement Snowflake (Via Crochet Python natif)
     load_snowflake = PythonOperator(
         task_id='load_snowflake',
         python_callable=load_data_to_snowflake,
     )
 
-    # 4. Définition du Workflow
+    # 4. Ordonnancement du Workflow
     ingest_bronze >> transform_silver >> build_gold_model >> load_snowflake
