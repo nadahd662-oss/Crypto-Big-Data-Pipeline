@@ -1,10 +1,9 @@
 # Crypto Big Data Pipeline & Analytics Dashboard 🚀
 
 ## 📋 Présentation du Projet
-Ce projet a été réalisé dans le cadre de mon projet final ("Fil Rouge") de fin d'études. Il consiste en la mise en place d'un pipeline de données de bout en bout automatisation de l'ingestion, de la transformation et de la visualisation des données du marché des cryptomonnaies. 
+Ce projet consiste en la mise en place d'un pipeline de données (data pipeline) de bout en bout, automatisant l'ingestion, la transformation et la visualisation en temps réel des données du marché des cryptomonnaies.
 
-L'objectif est d'offrir une plateforme décisionnelle moderne permettant de suivre la santé du marché global et d'analyser en détail les performances de chaque actif.
-
+L'objectif est de collecter les métriques clés de plusieurs actifs financiers, de les centraliser au sein d'une architecture moderne de données, et de les restituer de manière dynamique à travers un tableau de bord analytique.
 ---
 
 ## 🏗️ Architecture Technique (End-to-End)
