@@ -12,14 +12,14 @@ def alert_on_failure(context):
     error = context.get('exception')
     print(f"🚨 ALERT: Task '{task_id}' failed on {logical_date}. Error: {error}")
 
-# Fonction Python robuste exécutée hier avec succès
+# Fonction Python pour charger Snowflake
 def load_data_to_snowflake():
     from airflow.providers.snowflake.hooks.snowflake import SnowflakeHook
     
-    # Récupération de la connexion configurée dans Airflow Admin
     hook = SnowflakeHook(snowflake_conn_id='snowflake_default')
     
-    # Requête d'insertion directe
+    # Note : Cette requête insère la clé statique '1'. 
+    # À terme, il faudra la dynamiser pour charger tes vrais fichiers Parquet Gold !
     sql_query = """
     INSERT INTO FACT_CRYPTO_METRICS 
     VALUES (
@@ -69,13 +69,18 @@ with DAG(
     # Task 2: Transformation Silver (MinIO JSON -> MinIO Parquet)
     transform_silver = BashOperator(
         task_id='transform_silver',
-        bash_command=f'python {PROJECT_DIR}/scripts/process_silver.py',
+        bash_command='python /opt/airflow/scripts/process_silver.py {{ ds }}',
+        env={
+            'AWS_ACCESS_KEY_ID': 'admin',      
+            'AWS_SECRET_ACCESS_KEY': 'minioadmin',
+            **os.environ
+        }
     )
 
     # Task 3: Modélisation Gold (MinIO Parquet -> Star Schema Parquet)
     build_gold_model = BashOperator(
         task_id='build_gold_model',
-        bash_command=f'python {PROJECT_DIR}/scripts/model_gold.py',
+        bash_command=f'python {PROJECT_DIR}/scripts/model_gold.py {{ ds }}',
     )
 
     # Task 4: Chargement Snowflake (Via Crochet Python natif)
